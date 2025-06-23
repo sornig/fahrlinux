@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 import os.path
 from smartcard.wx.SimpleSCardApp import *
 
-from Fahrlinx import Fahrlinx
+from Fahrlinux import Fahrlinux
 
 def main( argv ):
     app = SimpleSCardApp(
