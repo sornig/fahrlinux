@@ -171,32 +171,32 @@ class Fahrlinx( wx.Panel, SimpleSCardAppEventObserver ):
         """Called when a card is activated by double-clicking on the card or reader tree control or toolbar.
         In this sample, we just connect to the card on the first activation."""
         SimpleSCardAppEventObserver.OnActivateCard( self, card )
-	datumlesen( self )
-	if DEBUG == 1:
-		print "test debug", self.readdatum
-	
-	ID_TEXTCTRL_RESPONSE=self.readdatum
-        self.feedbacktext1.SetLabel( 'Vorname: ' + `self.VorName` )
-        self.feedbacktext2.SetLabel( 'Namame : ' + `self.NachName` )
-        self.feedbacktext.SetLabel( 'Letztes Lesedatum: ' + `self.readdatum` )
+        datumlesen( self )
+        if DEBUG == 1:
+            print("test debug", self.readdatum)
+    
+        ID_TEXTCTRL_RESPONSE=self.readdatum
+        self.feedbacktext1.SetLabel( 'Vorname: ' + str(self.VorName) )
+        self.feedbacktext2.SetLabel( 'Nachname: ' + str(self.NachName) )
+        self.feedbacktext.SetLabel( 'Letztes Lesedatum: ' + str(self.readdatum) )
         self.transmitbutton.Enable()
-	
+    
     def OnActivateReader( self, reader ):
         """Called when a reader is activated by double-clicking on the reader tree control or toolbar."""
         SimpleSCardAppEventObserver.OnActivateReader( self, reader )
-        self.feedbacktext.SetLabel( 'Activated reader: ' + `reader` )
+        self.feedbacktext.SetLabel( 'Activated reader: ' + str(reader) )
         self.transmitbutton.Disable()
 
     def OnDeactivateCard( self, card ):
         """Called when a card is deactivated in the reader tree control or toolbar."""
         SimpleSCardAppEventObserver.OnActivateCard( self, card )
-        self.feedbacktext.SetLabel( 'Deactivated card: ' + `card` )
+        self.feedbacktext.SetLabel( 'Deactivated card: ' + str(card) )
         self.transmitbutton.Disable()
 
     def OnDeselectCard( self, card ):
         """Called when a card is selected by clicking on the card or reader tree control or toolbar."""
         SimpleSCardAppEventObserver.OnSelectCard( self, card )
-        self.feedbacktext.SetLabel( 'Deselected card: ' + `card` )
+        self.feedbacktext.SetLabel( 'Deselected card: ' + str(card) )
         self.transmitbutton.Disable()
 
     def OnSelectCard( self, card ):
@@ -207,36 +207,36 @@ class Fahrlinx( wx.Panel, SimpleSCardAppEventObserver ):
         if hasattr( self.selectedcard, 'connection' ):
             self.transmitbutton.Enable()
 
-	    
+
     def OnSelectReader( self, reader ):
         """Called when a reader is selected by clicking on the reader tree control or toolbar."""
         SimpleSCardAppEventObserver.OnSelectReader( self, reader )
-        self.feedbacktext.SetLabel( 'Selected reader: ' + `reader` )
+        self.feedbacktext.SetLabel( 'Selected reader: ' + str(reader) )
         self.transmitbutton.Disable()
 
     # callbacks
     def OnTransmit( self, event ):
         if hasattr( self.selectedcard, 'connection' ):
             kartelesen(self)
-	    if DEBUG == 1:
-	      print "Lesen fertig "
-	    datumsetzen(self)
-	    if DEBUG == 1:
-	      print "Datum setzen fertig"
+            if DEBUG == 1:
+                print("Lesen fertig ")
+        #datumsetzen(self)
+        #if DEBUG == 1:
+        #    print("Datum setzen fertig")
         event.Skip()
 
     def OnAbbruch(self, event):
-	    self.GetParent().Destroy()
-	    
-	    
+        self.GetParent().Destroy()
+        
+        
     def layoutControls( self ):
 
-	self.feedbacktext1 = wx.StaticText( self, ID_CARDSTATE, "", wx.Point(20, 30), wx.Size(140, -1) )
-	self.feedbacktext2 = wx.StaticText( self, ID_CARDSTATE, "", wx.Point(500, 600), wx.Size(140, -1) )
-	self.feedbacktext = wx.StaticText( self, ID_CARDSTATE, "", wx.DefaultPosition, wx.DefaultSize, 0 )
-	
-	
-	
+        self.feedbacktext1 = wx.StaticText( self, ID_CARDSTATE, "", wx.Point(20, 30), wx.Size(140, -1) )
+        self.feedbacktext2 = wx.StaticText( self, ID_CARDSTATE, "", wx.Point(500, 600), wx.Size(140, -1) )
+        self.feedbacktext = wx.StaticText( self, ID_CARDSTATE, "", wx.DefaultPosition, wx.DefaultSize, 0 )
+    
+    
+    
         # layout controls
         boxsizerCommand = wx.BoxSizer( wx.HORIZONTAL )
 
@@ -268,13 +268,14 @@ class Fahrlinx( wx.Panel, SimpleSCardAppEventObserver ):
         sizerboxstopbutton = wx.BoxSizer( wx.HORIZONTAL )
         sizerboxstopbutton.Add( [ 20, 20 ] , 0, wx.ALIGN_CENTER|wx.ALL, 5 )
         self.stopbutton = wx.Button( self, ID_TRANSMIT, "Abbruch", wx.Point(200, 211), wx.Size(80, -1))
+        self.stopbutton.Disable() # only causing errors when clicking it; what is it supposed to do anyways? ~sornig
 
 
         sizerPanel = wx.BoxSizer( wx.VERTICAL )
         sizerPanel.Add( boxsizerEvents, 1, wx.EXPAND | wx.ALL, 5 )
         sizerPanel.Add( sizerboxTransmitButton, 1, wx.EXPAND | wx.ALL, 5 )
-	
-	sizerPanel.Add( sizerboxstopbutton, 1, wx.EXPAND | wx.ALL, 5 )
+    
+        sizerPanel.Add( sizerboxstopbutton, 1, wx.EXPAND | wx.ALL, 5 )
 
 
         self.SetSizer( sizerPanel )
@@ -297,7 +298,7 @@ def kartelesen(self):
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
         ss = len(response)
         if DEBUG == 1:
-	  print "sighash tag ", tag
+            print("sighash tag ", tag)
         tagneu = [0, 0, 0, 0, 0]
         tagneu[0] = tag[0]
         tagneu[1] = tag[1]
@@ -306,8 +307,8 @@ def kartelesen(self):
         tagneu[4] = ss
         a = array.array("B", response )
         b = array.array("B", tagneu )
-        datei.write(b.tostring())
-        datei.write(a.tostring())
+        datei.write(b.tobytes())
+        datei.write(a.tobytes())
 
 
     # Auswahl nach Namen für die Kontrollgeräteanwendung
@@ -317,23 +318,23 @@ def kartelesen(self):
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
 
     def datschreiben(datei, response):
-	if DEBUG == 1:
-	  print "response 2", response
+        if DEBUG == 1:
+            print("response 2", response)
         a = array.array("B", response )
         b = array.array("B", tag )
         if DEBUG == 1:
-	  print "stop 1"
-        datei.write(b.tostring())
-        datei.write(a.tostring())
+            print("stop 1")
+        datei.write(b.tobytes())
+        datei.write(a.tobytes())
         if DEBUG == 1:
-	  print "datenschreib fertig"
+            print("datenschreib fertig")
 
 
     def datschreibenoh(datei, response):
         if DEBUG == 1:
-	  print "stop 2"
+            print("stop 2")
         a = array.array("B", response )
-        datei.write(a.tostring())
+        datei.write(a.tobytes())
 
 
     if DEBUG == 1:
@@ -344,7 +345,7 @@ def kartelesen(self):
 
     # ICC
     if DEBUG == 1:
-      print "datei", datei
+        print("datei", datei)
             #EF = ""
     tag = [0x00, 0x02, 0x00, 0x00, 0x19] # + response
     apdu = [0x00, 0xA4, 0x02, 0x0C, 0x02, 0x00, 0x02]
@@ -406,7 +407,7 @@ def kartelesen(self):
        
        # datei auswählen 						Events_Data
         tag = [0x05, 0x02, 0x00, 0x06, 0xc0] # + 
-	response = ""
+
         datschreiben(datei, response)
         apdu = [0x00, 0xa4, 0x02, 0x0c, 0x02, 0x05, 0x02]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
@@ -421,8 +422,8 @@ def kartelesen(self):
                 datschreibenoh(datei, response)
                 i = i + 1
             else:
-                    i=50
-    # Der letzte Block wird nicht aus dem Array gelesen, da er eine andere länge hat
+                i=50
+    # Der letzte Block wird nicht aus dem Array gelesen, da er eine andere Länge hat
         apdu =[0x00, 0xb0, 0x06, 0x40, 0x80]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
         datschreibenoh(datei, response)
@@ -431,11 +432,11 @@ def kartelesen(self):
     # Signatur des hash codes erstellen
         sighash(self, response)
 
-#        kgaw(self)
+        # kgaw(self)
 
     # datei auswählen 						Faults_Data
         tag = [0x05, 0x03, 0x00, 0x04, 0x80] # + 
-	response = ""	
+
         datschreiben(datei, response)
         apdu = [0x00, 0xa4, 0x02, 0x0c, 0x02, 0x05, 0x03]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
@@ -451,7 +452,7 @@ def kartelesen(self):
                 i = i + 1
             else:
                 i=50
-    # Der letzte Block wird nicht aus dem Array gelesen, da er eine andere länge hat
+    # Der letzte Block wird nicht aus dem Array gelesen, da er eine andere Länge hat
         apdu =[0x00, 0xb0, 0x03, 0xe8, 0x98]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
         datschreibenoh(datei, response)
@@ -463,7 +464,7 @@ def kartelesen(self):
 
     # datei auswählen 						Driver_Activity_Data
         tag = [0x05, 0x04, 0x00, 0x30, 0xcc] # + response
-	response = ""
+
         datschreiben(datei, response)
         apdu = [0x00, 0xa4, 0x02, 0x0c, 0x02, 0x05, 0x04]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
@@ -479,20 +480,20 @@ def kartelesen(self):
                 i = i + 1
             else:
                 i=70
-    # Der letzte Block wird nicht aus dem Array gelesen, da er eine andere länge hat
+    # Der letzte Block wird nicht aus dem Array gelesen, da er eine andere Länge hat
         apdu =[0x00, 0xb0, 0x30, 0x70, 0x5c]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
         datschreibenoh(datei, response)
     if sw1 == 144 and sw2 == 0:
     # Signatur des hash codes erstellen
         sighash(self, response)
- #       kgaw(self)
+        # kgaw(self)
 
 
 
     # datei auswählen 						Vehicels_Used
         tag = [0x05, 0x05, 0x00, 0x18, 0x3a] # + 
-	response =""
+
         datschreiben(datei, response)
         apdu = [0x00, 0xa4, 0x02, 0x0c, 0x02, 0x05, 0x05]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
@@ -510,7 +511,7 @@ def kartelesen(self):
             else:
                 i=70
     # Der letzte Block wird nicht aus dem Array gelesen, da er eine andere länge hat
-        apdu =[0x00, 0xb0, 0x18, 0x38, 0x02]
+        apdu = [0x00, 0xb0, 0x18, 0x38, 0x02]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
         datschreibenoh(datei, response)
     if sw1 == 144 and sw2 == 0:
@@ -522,7 +523,7 @@ def kartelesen(self):
 
     # datei auswählen 						Places
         tag = [0x05, 0x06, 0x00, 0x04, 0x61] # + 
-	response = ""
+
         datschreiben(datei, response)
         apdu = [0x00, 0xa4, 0x02, 0x0c, 0x02, 0x05, 0x06]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
@@ -582,7 +583,7 @@ def kartelesen(self):
         apdu = [ 0x00, 0xb0, 0x00, 0xc8, 0x50]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
         if DEBUG == 1:
-	  print "stop 4"
+            print("stop 4")
         datschreibenoh(datei, response)
         
     if sw1 == 144 and sw2 == 0:
@@ -620,54 +621,45 @@ def kartelesen(self):
     # Dateinamen zusammensetzten    
     #    
     # Identifikation Kartenhalter
-        NachName = ""
         apdu = [0x00, 0xa4, 0x02, 0x0c, 0x02, 0x05, 0x20]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
         if DEBUG == 1:
-	  print "NachName"
+            print("FahrerName")
+
     #    VorName
         apdu = [ 0x00, 0xb0, 0x00, 0x66, 0x01]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
-        NachName = NachName + chr(response[0])
-        NachName = NachName + "_"
+        VorName = chr(response[0])
+        if DEBUG == 1:
+            print("Vorname: ", VorName)
 
     #    NachName
         apdu = [ 0x00, 0xb0, 0x00, 0x42, 0x23]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
-        ss = len(response)
-        i = 0
-        while i <  ss:
-            bb = response[i]
-            NachName = NachName + chr(bb)
-            i = i + 1
-        NachName = NachName + "_"
+        NachName = "".join(chr(b) for b in response).strip()
         if DEBUG == 1:
-	  print "Nachname 2"
-    #    Kartenummer
-        apdu = [ 0x00, 0xb0, 0x00, 0x01, 0x0e]
+            print("Nachname: ", NachName)
+
+    #    KartenNummer
+        card_number_length = 0x10 # 16 bytes
+        apdu = [ 0x00, 0xb0, 0x00, 0x01, card_number_length]
         response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
-        Kartenummer = response
-        ss = len(response)
-        i = 0
+        KartenNummer = "".join(chr(b) for b in response).strip()
         if DEBUG == 1:
-	  print "fehler?"
-        while i <  ss:
-	    if DEBUG == 1:
-	      print "in while"
-            bb = response[i]
-            NachName = NachName + chr(bb)
-            i = i + 1
+            print("Kartennummer: ", KartenNummer)
+
+    #     Dateiname zusammensetzen
         dz = (strftime("C_%Y%m%d_%H%M_"))
-        fn = "/" + dz + NachName + ".DDD"
+        fn = "/" + dz + VorName + "_" + NachName + "_" + KartenNummer + ".DDD"
         if DEBUG == 1:
-	  print "fn", fn
+            print("fn: ", fn)
         
         datei.close()
         if DEBUG == 1:
-	  print " Alles Erfolgreich"
+            print(" Alles Erfolgreich")
     else:
-	if DEBUG == 1:
-	  print ' keine Fahrerkarte'
+        if DEBUG == 1:
+            print(' keine Fahrerkarte')
         datei.close()
 
 
@@ -675,9 +667,9 @@ def kartelesen(self):
     dir = os.getcwd()
     isdir = dir + "/Download"
     if not os.path.isdir(isdir):
-      if DEBUG == 1:
-	print "dir", dir
-      os.mkdir("Download")
+        if DEBUG == 1:
+            print("dir", dir)
+        os.mkdir("Download")
       
     altfile = dir + "/file.ddd"
     neufile = isdir + fn
@@ -686,16 +678,16 @@ def kartelesen(self):
 
 def datumsetzen(self):
     if DEBUG == 1:
-      print "Datum setzen "
+        print("Datum setzen ")
     apdu = [0x00, 0xa4, 0x04, 0x0c, 0x06, 0xff, 0x54, 0x41, 0x43, 0x48, 0x4f]
     response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
     if DEBUG == 1:
-      print "response ", response, sw1, sw2
+        print("response ", response, sw1, sw2)
 # Datei wählen
     apdu = [0x00, 0xa4, 0x02, 0x0c, 0x02, 0x05, 0x0e]
     response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
     if DEBUG == 1:
-      print "response ", response, sw1, sw2
+        print("response ", response, sw1, sw2)
 
 # Datum erzeugen
     rd = int(mktime(gmtime()))
@@ -710,7 +702,7 @@ def datumsetzen(self):
 # Datum Schreiben
     response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
     if DEBUG == 1:
-      print "response ", response, sw1, sw2
+        print("response ", response, sw1, sw2)
 
 def datumlesen(self): #führt zum fehler beim lesen. Die Karte muss resetet werden ?
 # Datei wählen
@@ -737,13 +729,13 @@ def datumlesen(self): #führt zum fehler beim lesen. Die Karte muss resetet werd
     ss = len(response)
     i = 0
     while i <  ss:
-         bb = chr(response[i])
-	 if bb ==  " ":
-	    i = 40
-         self.VorName = self.VorName + bb
-         i = i + 1
+        bb = chr(response[i])
+        if bb ==  " ":
+            i = 40
+        self.VorName = self.VorName + bb
+        i = i + 1
     if DEBUG == 1:
-      print "name 1 ", self.VorName
+        print("name 1 ", self.VorName)
 
 
     self.NachName = ""
@@ -753,21 +745,21 @@ def datumlesen(self): #führt zum fehler beim lesen. Die Karte muss resetet werd
     ss = len(response)
     i = 0
     while i <  ss:
-          bb = chr(response[i])
-          if bb == " ":
-	      i = 40
-          self.NachName = self.NachName + bb
-          i = i + 1
+        bb = chr(response[i])
+        if bb == " ":
+            i = 40
+        self.NachName = self.NachName + bb
+        i = i + 1
     if DEBUG == 1:
-      print " Die Karte wurde zuletzt gelesen ", self.readdatum 
+        print(" Die Karte wurde zuletzt gelesen ", self.readdatum )
       
-      print " Name ", self.NachName, self.VorName
+        print(" Name ", self.NachName, self.VorName)
 
 # Karte zurücksetzen
     apdu = [0x00, 0xa4, 0x02, 0x3F, 0x00, 0x05, 0x20]
     response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
     if DEBUG == 1:
-      print  " response ", response, sw1, sw2
+        print( " response ", response, sw1, sw2)
 
     
 #    self.selectedcard.reconnect()
