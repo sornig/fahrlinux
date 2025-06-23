@@ -151,7 +151,7 @@ lesen[63] = [0x00, 0xb0, 0x30, 0x70, 0x5c]
 #test = 0
 
 
-class Fahrlinx( wx.Panel, SimpleSCardAppEventObserver ):
+class Fahrlinux( wx.Panel, SimpleSCardAppEventObserver ):
     '''A simple panel that displays activated cards and readers and can
     send APDU to a connected card.'''
 
