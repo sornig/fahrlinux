@@ -33,7 +33,7 @@ from Fahrlinx import Fahrlinx
 def main( argv ):
     app = SimpleSCardApp(
         appname = 'Fahrerkarte auslesen',
-        apppanel = Fahrlinx,
+        apppanel = Fahrlinux,
 #        appstyle =  TR_SMARTCARD | TR_READER | PANEL_APDUTRACER,
         appstyle =  TR_SMARTCARD | PANEL_APDUTRACER ,
         appicon = os.path.join( os.path.dirname( __file__ ), 'images', 'mysmartcard.ico' ),
