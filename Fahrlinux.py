@@ -47,6 +47,7 @@ from smartcard.CardRequest import CardRequest
 from smartcard.CardType import ATRCardType
 from struct import *
 import os
+import io
 
 """ Option zum Debuggen 
 define DEBUG 1 einschalten
@@ -340,8 +341,7 @@ def kartelesen(self):
     if DEBUG == 1:
       print("WB ")
         
-    datei = open("file.ddd", "wb")
-
+    datei = io.BytesIO()
 
     # ICC
     if DEBUG == 1:
@@ -654,13 +654,11 @@ def kartelesen(self):
         if DEBUG == 1:
             print("fn: ", fn)
         
-        datei.close()
         if DEBUG == 1:
             print(" Alles Erfolgreich")
     else:
         if DEBUG == 1:
             print(' keine Fahrerkarte')
-        datei.close()
 
 
 
@@ -671,9 +669,11 @@ def kartelesen(self):
             print("dir", dir)
         os.mkdir("Download")
       
-    altfile = dir + "/file.ddd"
+    data = datei.getvalue()
     neufile = isdir + fn
-    os.rename( altfile, neufile )
+    with open(neufile, "wb") as f:
+        f.write(data)
+    datei.close()
 
 
 def datumsetzen(self):
