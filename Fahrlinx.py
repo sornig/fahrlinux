@@ -338,7 +338,7 @@ def kartelesen(self):
 
 
     if DEBUG == 1:
-      print "WB	"
+      print("WB ")
         
     datei = open("file.ddd", "wb")
 
@@ -719,37 +719,19 @@ def datumlesen(self): #führt zum fehler beim lesen. Die Karte muss resetet werd
     rd = gmtime(ct)
     self.readdatum = strftime("%a  %d.%m.%Y   %H Uhr %M ",rd)
     
-    self.VorName = ""
-    
+    # VorName
     apdu = [0x00, 0xa4, 0x02, 0x0c, 0x02, 0x05, 0x20]
     response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
 
     apdu = [ 0x00, 0xb0, 0x00, 0x66, 0x23]
     response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
-    ss = len(response)
-    i = 0
-    while i <  ss:
-        bb = chr(response[i])
-        if bb ==  " ":
-            i = 40
-        self.VorName = self.VorName + bb
-        i = i + 1
-    if DEBUG == 1:
-        print("name 1 ", self.VorName)
+    self.VorName = "".join(chr(b) for b in response).strip()
 
-
-    self.NachName = ""
-    #    NachName
+    # NachName
     apdu = [ 0x00, 0xb0, 0x00, 0x42, 0x23]
     response, sw1, sw2 = self.selectedcard.connection.transmit( apdu, CardConnection.T1_protocol )
-    ss = len(response)
-    i = 0
-    while i <  ss:
-        bb = chr(response[i])
-        if bb == " ":
-            i = 40
-        self.NachName = self.NachName + bb
-        i = i + 1
+    self.NachName = "".join(chr(b) for b in response).strip()
+    
     if DEBUG == 1:
         print(" Die Karte wurde zuletzt gelesen ", self.readdatum )
       
