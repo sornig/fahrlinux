@@ -7,6 +7,13 @@ Die Software habe ich 2009 geschrieben, läuft aber bei mir unter Opensuse Tumbl
 
 
 pyscard wir benötigt http://sourceforge.net/projects/pyscard/
+> [!TIP]
+> On Void Linux with the card reader "Cherry SmartTerminal ST-1144" (others will probably also work) simply install the packages
+> `pcsclite` and `pcsc-ccid` and enable the `pcscd` service:
+> ```
+> xbps-install -S pcsclite pcsc-ccid
+> ln -s /etc/sv/pcscd /var/service/
+> ```
 
 pyscard is free software; you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -18,7 +25,7 @@ zum Starten der Anwendung fahrlinux.py aufrufen.
 Im linken Teil der Anwendung erscheint eine Auswahl der Card Reader und der SmartCard.
 Durch doppelklick. Die Karte wählen und dann auf Start drücken.
 
-Die datei wird im aktuellen Verzeichniss gespeichert. Das Downloaddatum wird noch nicht zurückgesetzt.
+Die Datei wird im aktuellen Verzeichnis gespeichert. Das Downloaddatum wird noch nicht zurückgesetzt.
 
 
 Die Karte kann ausgelesen werden und die DDD datei kann mittels des Tools auf :
